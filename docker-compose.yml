@@ -21,9 +21,7 @@ services:
         build:
             context: .
             dockerfile: dockerfile-puppeteer 
-        entrypoint: node src.js
+        entrypoint: node testScheduler.js
         links:
             - mongo
             - web-server
-
-

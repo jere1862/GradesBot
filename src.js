@@ -3,6 +3,8 @@ const MongoClient = require('mongodb').MongoClient;
 const request = require('request');
 const _ = require('underscore')
 
+module.exports.scrape = scrape;
+
 var objectDiff = function diff(a,b) {
     var r = {};
     _.each(a, function(v,k) {
@@ -20,11 +22,14 @@ Object.diff = function( x, y ) {
     return objectDiff(x,y); 
 };
 
-let test = {};
 
-console.log("Starting web scraper");
+async function scrape(){
+    innerScrape(process.env.LOGIN, process.env.PASSWORD);
+}
 
-(async (login, password) => {
+async function innerScrape(login, password) {
+    console.log("Running web scraper");
+
     const db = await MongoClient.connect('mongodb://mongo/gelimprover');
     const collection = db.collection('grades');
     
@@ -32,14 +37,14 @@ console.log("Starting web scraper");
     try{ 
         const page = await browser.newPage();
         await page.goto('http://www.gel.usherbrooke.ca/s4/h17/doc/evaluations/notesEtu.php');
-        
+      
         // TODO: Fix the variable score here
-        await page.evaluate((login, password) => {
+        await page.evaluate((gelLogin, gelPassword) => {
             let usernameInput = document.querySelector('#username');
             let passwordInput = document.querySelector('#password');
             
-            usernameInput.value = login;
-            passwordInput.value = password;
+            usernameInput.value = gelLogin;
+            passwordInput.value = gelPassword;
             
             const form =  document.querySelector('#authentification');
             
@@ -190,4 +195,4 @@ console.log("Starting web scraper");
        db.close();
        return
     }
-})(process.env.LOGIN, process.env.PASSWORD);
+};
