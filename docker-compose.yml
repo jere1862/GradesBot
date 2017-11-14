@@ -1,0 +1,29 @@
+version: '2'
+services:
+    web-server:
+        build: 
+            context: .
+            dockerfile: dockerfile-webserver
+        ports:
+            - "8000:8000"
+    mongo:
+        image: "mongo:3.4"
+        volumes:
+            - /data/mongodb/db:/data/db
+        ports:
+            - "27017:27017"
+    puppeteer:
+        environment:
+            - LOGIN=${GEL_LOGIN}
+            - PASSWORD=${GEL_PASSWORD}
+        cap_add:
+            - SYS_ADMIN
+        build:
+            context: .
+            dockerfile: dockerfile-puppeteer 
+        entrypoint: node src.js
+        links:
+            - mongo
+            - web-server
+
+

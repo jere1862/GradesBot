@@ -1,0 +1,6 @@
+if while running docker-compose you get an error saying DOCKER_HOST is not set:
+sudo usermod -aG docker $USER
+
+
+if that still doesn't work, do:
+if that STILL doesn't work, restart the docker service or run your docker commands as sudo
