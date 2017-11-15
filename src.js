@@ -37,8 +37,9 @@ async function innerScrape(login, password) {
     try{ 
         const page = await browser.newPage();
         await page.goto('http://www.gel.usherbrooke.ca/s4/h17/doc/evaluations/notesEtu.php');
-      
-        // TODO: Fix the variable score here
+        
+        await page.waitForSelector('#username');
+
         await page.evaluate((gelLogin, gelPassword) => {
             let usernameInput = document.querySelector('#username');
             let passwordInput = document.querySelector('#password');
@@ -53,6 +54,7 @@ async function innerScrape(login, password) {
         
         await page.waitForSelector('.dojoxGridMasterView');
         
+        // TODO: Substitute code instead, this is disgusting
         const gradeMap = await page.evaluate(() => {
             return (function(document){
                 const
