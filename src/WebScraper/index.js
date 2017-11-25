@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const MongoClient = require('mongodb').MongoClient;
 const request = require('request');
+const debug = require('debug')('WebScraper');
 const _ = require('underscore')
 
 module.exports.scrape = scrape;
@@ -24,49 +25,55 @@ Object.diff = function( x, y ) {
 
 
 async function scrape(){
+    debug('Booting Web Scraper')
     innerScrape(process.env.LOGIN, process.env.PASSWORD);
 }
 
 async function innerScrape(username, password) {
-    console.log("Running web scraper");
-
-   // const db = await MongoClient.connect('mongodb://mongo/gelimprover');
-   // const collection = db.collection('grades');
+    const db = await MongoClient.connect('mongodb://mongo/gelimprover');
+    const collection = db.collection('grades');
     
-    const browser = await puppeteer.launch({headless: false});
+    const browser = await puppeteer.launch();
     try{ 
         const page = await browser.newPage();
+        const webPage = 'http://www.gel.usherbrooke.ca/s4/h17/doc/evaluations/notesEtu.php';
+        debug('Navigating to %s', webPage); 
+ 
         await page.goto('http://www.gel.usherbrooke.ca/s4/h17/doc/evaluations/notesEtu.php');
-        
+
         await page.waitForSelector('#username');
         
+        debug('Reached page successfully, attempting to login with username %s', username); 
+                
         await login(page, username, password);
 
         await page.waitForSelector('.dojoxGridMasterView');
+
+        debug('Login successful, fetching grades')
         
         const newGrades = await getGradesFromGel(page);
        
         const oldGrades = await collection.findOne({}, {'_id': false});
 
         if(!oldGrades){
-            console.log("There were no previous grades, inserting new ones.");
+            debug("There were no previous grades, inserting new ones.");
             collection.insertOne(newGrades);
         }else{
-            // Some grades are already there
-            console.log("There were previous grades.");
+            debug("There were previous grades.");
             let diff = Object.diff(newGrades, oldGrades);
             if(Object.keys(diff).length){
-                // There is a new grade!
-                console.log("New grades were found! Sending them to the server.");
+                debug("New grades were found! Sending them to the server.");
                 collection.replaceOne({}, p);
                 request.post(
                     'http://web-server:8000',
                     {json: {'grades': diff}}
                 );
+            }else{
+                debug('No new grades were found, shutting down');
             }
         }
     }catch(err){
-        console.error(err);
+        debug(err);
     }finally{
        await browser.close();
        db.close();

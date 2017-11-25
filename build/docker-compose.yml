@@ -2,8 +2,7 @@ version: '2'
 services:
     web-server:
         build: 
-            context: .
-            dockerfile: dockerfile-webserver
+            context: ../src/WebServer/
         ports:
             - "8000:8000"
     mongo:
@@ -16,12 +15,12 @@ services:
         environment:
             - LOGIN=${GEL_LOGIN}
             - PASSWORD=${GEL_PASSWORD}
+            - DEBUG=WebScraper
         cap_add:
             - SYS_ADMIN
         build:
-            context: .
-            dockerfile: dockerfile-puppeteer 
-        entrypoint: node testScheduler.js
+            context: ../src/WebScraper
+        entrypoint: node ./scheduler.js
         links:
             - mongo
             - web-server

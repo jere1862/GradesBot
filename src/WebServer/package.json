@@ -1,15 +1,16 @@
 {
-  "name": "web-scraper",
+  "name": "web-server",
   "version": "1.0.0",
-  "description": "Website scraper",
-  "main": "index.js",
+  "description": "",
+  "main": "WebServer.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node WebServer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Jeremie Roy",
   "license": "ISC",
   "dependencies": {
-    "puppeteer": "^0.13.0"
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2"
   }
 }
