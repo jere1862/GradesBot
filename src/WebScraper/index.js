@@ -52,7 +52,7 @@ async function innerScrape(username, password) {
         debug('Login successful, fetching grades')
         
         const newGrades = await getGradesFromGel(page);
-       
+         
         const oldGrades = await collection.findOne({}, {'_id': false});
 
         if(!oldGrades){
@@ -62,8 +62,8 @@ async function innerScrape(username, password) {
             debug("There were previous grades.");
             let diff = Object.diff(newGrades, oldGrades);
             if(Object.keys(diff).length){
+                collection.replaceOne({}, newGrades);
                 debug("New grades were found! Sending them to the server.");
-                collection.replaceOne({}, p);
                 request.post(
                     'http://web-server:8000',
                     {json: {'grades': diff}}

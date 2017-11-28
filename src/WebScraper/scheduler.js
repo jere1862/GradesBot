@@ -7,5 +7,7 @@ let job = schedule.scheduleJob('*/30 * * * *', function(){
     scraper.scrape();
 });
 
+scraper.scrape();
+
 debug("Scraper scheduler started");
 

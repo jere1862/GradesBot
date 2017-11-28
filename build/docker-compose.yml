@@ -1,6 +1,8 @@
 version: '2'
 services:
     web-server:
+        environment:
+            - API_KEY=${MESSENGER_KEY}
         build: 
             context: ../src/WebServer/
         ports:
@@ -14,7 +16,7 @@ services:
     puppeteer:
         environment:
             - LOGIN=${GEL_LOGIN}
-            - PASSWORD=${GEL_PASSWORD}
+            - PASSWORD=${GEL_PASSWORD} 
             - DEBUG=WebScraper
         cap_add:
             - SYS_ADMIN
