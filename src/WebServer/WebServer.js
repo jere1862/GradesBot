@@ -6,12 +6,12 @@ const request = require('request');
 app.use(express.json());
 
 app.get('/', function(req, res) {
+    sendMessage(1013438942027043, {"text": "Test le bot"});
     res.status(200).send('Hello!');
 });
 
 app.post('/', function(req, res) {
-    sendMessage(1013438942027043, {"text": req.body.grades});
-    console.log(req.body.grades);
+    sendMessage(1013438942027043, {"text": "Nouvelle note!\n"+Object.keys(req.body.grades)[0]+'\n'+'http://www.gel.usherbrooke.ca/s5info/a17/doc/evaluations/notesEtu.php'});
     res.send('Received your data!');
 });
 
@@ -49,11 +49,8 @@ app.post('/webhook', function(req, res) {
     if(body.object === 'page'){
         body.entry.forEach(function(entry){
             let webhookEvent = entry.messaging[0];
-            console.log(webhookEvent);
 
             let senderPSID = webhookEvent.sender.id;
-            sendMessage(senderPSID, {"text": "Bonjour"});
-            console.log("Sent message!");
         });
 
         res.status(200).send('EVENT_RECEIVED');

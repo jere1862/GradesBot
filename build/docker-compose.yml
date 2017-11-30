@@ -22,7 +22,7 @@ services:
             - SYS_ADMIN
         build:
             context: ../src/WebScraper
-        entrypoint: node ./scheduler.js
+        entrypoint: node ./scheduler.js ${PAGE_URL}
         links:
             - mongo
             - web-server

@@ -9,6 +9,10 @@ module.exports.scrape = scrape;
 var objectDiff = function diff(a,b) {
     var r = {};
     _.each(a, function(v,k) {
+        if(!b[k]){
+           r[k]=v;
+           return;
+        }
         if(b[k] === v) return;
         val = _.isObject(v) ? objectDiff(v, b[k]) : v;
         if (!_.isObject(val) || _.keys(val).length>0){
@@ -25,35 +29,45 @@ Object.diff = function( x, y ) {
 
 
 async function scrape(){
-    debug('Booting Web Scraper')
-    innerScrape(process.env.LOGIN, process.env.PASSWORD);
+    debug('Booting Web Scraper');
+    innerScrape(process.env.LOGIN, process.env.PASSWORD, process.argv[2]);
 }
 
-async function innerScrape(username, password) {
+async function innerScrape(username, password, url) {
     const db = await MongoClient.connect('mongodb://mongo/gelimprover');
     const collection = db.collection('grades');
     
     const browser = await puppeteer.launch();
     try{ 
         const page = await browser.newPage();
-        const webPage = 'http://www.gel.usherbrooke.ca/s4/h17/doc/evaluations/notesEtu.php';
-        debug('Navigating to %s', webPage); 
+        debug('Navigating to %s', url); 
  
-        await page.goto('http://www.gel.usherbrooke.ca/s4/h17/doc/evaluations/notesEtu.php');
-
-        await page.waitForSelector('#username');
+        await page.goto(url);
         
-        debug('Reached page successfully, attempting to login with username %s', username); 
+        let skipLogin = false;
+        try{
+          await page.waitForSelector('#username');
+        } catch(e){
+          debug("Couldn\'t find the login page, checking if login was skipped");   
+          await page.waitForSelector('.dojoxGridMasterView');
+          skipLogin = true;
+        }
+      
+        if(!skipLogin){
+           debug('Reached page successfully, attempting to login with username %s', username); 
                 
-        await login(page, username, password);
+            await login(page, username, password);
 
-        await page.waitForSelector('.dojoxGridMasterView');
+            await page.waitForSelector('.dojoxGridMasterView');
 
-        debug('Login successful, fetching grades')
-        
+            debug('Login successful, fetching grades')
+        }        
+
         const newGrades = await getGradesFromGel(page);
          
         const oldGrades = await collection.findOne({}, {'_id': false});
+        
+        newGrades["UneNouvelleNote"] = {"fake exam": "allo"};
 
         if(!oldGrades){
             debug("There were no previous grades, inserting new ones.");
