@@ -49,18 +49,25 @@ async function innerScrape(username, password, url) {
           await page.waitForSelector('#username');
         } catch(e){
           debug("Couldn\'t find the login page, checking if login was skipped");   
-          await page.waitForSelector('.dojoxGridMasterView');
+        
+          try{
+            await page.waitForSelector('.dojoxGridMasterView');
+          }finally{
+            debug("Did not land on grades page, printing page title");
+            await printPageTitle(page);
+          }
+
           skipLogin = true;
         }
       
         if(!skipLogin){
            debug('Reached page successfully, attempting to login with username %s', username); 
-                
-            await login(page, username, password);
+                 
+           await login(page, username, password);
 
-            await page.waitForSelector('.dojoxGridMasterView');
-
-            debug('Login successful, fetching grades')
+           await page.waitForSelector('.dojoxGridMasterView');
+ 
+           debug('Login successful, fetching grades')
         }        
 
         const newGrades = await getGradesFromGel(page);
@@ -226,4 +233,12 @@ async function getGradesFromGel(page){
                 }
             })(document);
         });   
+}
+
+async function printPageTitle(page){
+    const pageTitle = await page.evaluate(() => {
+        return document.getElementsByTagName("title")[0].innerText;
+    });
+    console.log("Test la fonction");   
+    debug(pageTitle);
 }

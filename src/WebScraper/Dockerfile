@@ -34,7 +34,5 @@ RUN groupadd -r pptruser && useradd -r -g pptruser -G audio,video pptruser \
 # Run user as non privileged.
 USER pptruser
 
-RUN ls -a 
-
 CMD ["google-chrome-unstable"]
 
