@@ -48,12 +48,12 @@ async function innerScrape(username, password, url) {
         try{
           await page.waitForSelector('#username');
         } catch(e){
-          debug("Couldn\'t find the login page, checking if login was skipped");   
+          debug('Couldn\'t find the login page, checking if login was skipped');   
         
           try{
             await page.waitForSelector('.dojoxGridMasterView');
           }finally{
-            debug("Did not land on grades page, printing page title");
+            debug('Did not land on grades page, printing page information');
             await printPageInformation(page);
           }
 
@@ -62,10 +62,15 @@ async function innerScrape(username, password, url) {
       
         if(!skipLogin){
            debug('Reached page successfully, attempting to login with username %s', username); 
-                 
            await login(page, username, password);
+           debug('Login successful, waiting for page to load');
+           try{
+               await page.waitForSelector('.dojoxGridMasterView');
+           }finally{
+               debug('Dojox grid was not detected, printing page information.');
+               await printPageInformation(page);
+           }
 
-           await page.waitForSelector('.dojoxGridMasterView');
  
            debug('Login successful, fetching grades')
         }        
