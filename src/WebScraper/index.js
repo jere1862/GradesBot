@@ -54,7 +54,7 @@ async function innerScrape(username, password, url) {
             await page.waitForSelector('.dojoxGridMasterView');
           }finally{
             debug("Did not land on grades page, printing page title");
-            await printPageTitle(page);
+            await printPageInformation(page);
           }
 
           skipLogin = true;
@@ -235,10 +235,11 @@ async function getGradesFromGel(page){
         });   
 }
 
-async function printPageTitle(page){
+async function printPageInformation(page){
     const pageTitle = await page.evaluate(() => {
         return document.getElementsByTagName("title")[0].innerText;
     });
-    console.log("Test la fonction");   
-    debug(pageTitle);
+    debug(`Page Title: ${pageTitle}`);
+    debug(`Url: ${page.url()}`);
+
 }
