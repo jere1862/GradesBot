@@ -3,6 +3,7 @@ services:
     web-server:
         environment:
             - API_KEY=${MESSENGER_KEY}
+            - PAGE_URL=${PAGE_URL}
         build: 
             context: ../src/WebServer/
         ports:
