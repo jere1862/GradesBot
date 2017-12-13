@@ -11,7 +11,9 @@ app.get('/', function(req, res) {
 });
 
 app.post('/', function(req, res) {
-    sendMessage(1013438942027043, {"text": "Nouvelle note!\n"+Object.keys(req.body.grades)[0]+'\n'+'http://www.gel.usherbrooke.ca/s5info/a17/doc/evaluations/notesEtu.php'});
+    sendMessage(1013438942027043, {"text": "Nouvelle note!\n"}); 
+    sendMessage(1013438942027043, {"text": JSON.stringify(req.body.grades)});
+    sendMessage(1013438942027043, {"text": process.env.PAGE_URL});
     res.send('Received your data!');
 });
 
