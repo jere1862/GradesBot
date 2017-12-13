@@ -3,6 +3,7 @@ services:
     web-server:
         environment:
             - API_KEY=${MESSENGER_KEY}
+            - PAGE_URL=${PAGE_URL}
         build: 
             context: ../src/WebServer/
         ports:
@@ -15,7 +16,7 @@ services:
             - "27017:27017"
     puppeteer:
         environment:
-            - LOGIN=${GEL_LOGIN}
+            - LOGIN=${GEL_USERNAME}
             - PASSWORD=${GEL_PASSWORD} 
             - DEBUG=WebScraper
         cap_add:
