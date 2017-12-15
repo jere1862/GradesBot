@@ -2,11 +2,13 @@ const express = require('express')
 const app = express();
 const bodyParser = require('body-parser');
 const request = require('request');
+const MongoClient = require('mongodb').MongoClient;
+const db = await MongoClient.connect('mongodb://mongo/gelimprover');
+const collection = db.collection('psids');
 
 app.use(express.json());
 
 app.get('/', function(req, res) {
-    sendMessage(1013438942027043, {"text": "Test le bot"});
     res.status(200).send('Hello!');
 });
 
@@ -53,6 +55,11 @@ app.post('/webhook', function(req, res) {
             let webhookEvent = entry.messaging[0];
 
             let senderPSID = webhookEvent.sender.id;
+            collection.update(senderPSID, senderPSID, {'upsert': true});
+            collection.find().toArray(function(err, docs) {
+                console.log("Retrieved docs");
+                console.log(docs);
+                });
         });
 
         res.status(200).send('EVENT_RECEIVED');
