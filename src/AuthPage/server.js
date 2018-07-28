@@ -25,7 +25,7 @@ app.use(session({
 
 app.use(express.static('public'));
 
-app.get('/', cas.bounce, function (req, res) {
+app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 

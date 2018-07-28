@@ -41,3 +41,26 @@ button::-moz-focus-inner {
     display: flex;
     justify-content: end;
 }
+
+.footer {
+    display: flex;
+    justify-content: center;
+}
+
+.footer > * {
+    margin: 0 5px 0 5px;
+    font-size: small;
+}
+
+a {
+    color: #505050;
+}
+
+a:visited {
+    color: #505050;
+}
+
+.centered-text {
+    display: flex;
+    justify-content: center;
+}
