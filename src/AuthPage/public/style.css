@@ -1,0 +1,43 @@
+body {
+    height: 95vh;
+    width: 98%;
+}
+
+body * {
+    font-family: 'Open Sans', sans-serif;
+}
+
+.aligner {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    display: flex;
+    align-items: center;
+}
+
+#subscribe-btn{
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 5px 10px 5px 10px;
+    cursor: pointer;
+}
+
+button::-moz-focus-inner {
+    border: 0;
+}
+  
+#subscribe-btn:hover {
+    background-color: #e4f6ff;
+}
+
+#response-message {
+    display: none;
+}
+
+.right-align {
+    display: flex;
+    justify-content: end;
+}
