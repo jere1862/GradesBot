@@ -3,6 +3,7 @@ const app = express();
 const path = require('path');
 const session = require('express-session');
 const CASAuthentication = require('cas-authentication');
+const logger = require('./logger');
 
 const cas = new CASAuthentication({
     cas_url         : 'https://cas.usherbrooke.ca',
@@ -25,7 +26,7 @@ app.use(session({
 
 app.use(express.static('public'));
 
-app.get('/', function (req, res) {
+app.get('/', cas.bounce, function (req, res) {
   res.sendFile(path.join(__dirname + '/index.html'));
 });
 
@@ -38,5 +39,5 @@ app.get('/api/user', cas.block, function (req, res) {
 app.get('/logout', cas.logout);
 
 app.listen(8080, () => {
-    console.log("Listening on port", 8080);
+    logger.info('Listening on port %d', 8080);
 });

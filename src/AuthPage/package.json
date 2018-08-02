@@ -10,8 +10,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.282.1",
     "cas-authentication": "0.0.8",
     "express": "^4.16.3",
-    "express-session": "^1.15.6"
+    "express-session": "^1.15.6",
+    "nodemailer": "^4.6.7",
+    "nodemailer-ses-transport": "^1.5.1",
+    "winston": "^3.0.0"
   }
 }
